@@ -1,0 +1,163 @@
+{% load staticfiles %}
+
+<head>
+    <link rel="stylesheet" href={% static "css2/bootstrap.min.css" %}>
+    <link rel="stylesheet" href={% static "css2/hero-slider-style.css" %}>
+    <link rel="stylesheet" href={% static "css2/templatemo-style.css" %}>
+
+    <style type='text/css'>
+        #pagelist {
+            margin: 0 auto;
+            padding: 0;
+            font-size: 12px;
+        }
+        
+        #pagelist ul li {
+            display: inline-block;
+            border: 1px solid #5d9cdf;
+            line-height: 20px;
+            margin: 0px 2px;
+        }
+        
+        #pagelist ul li a {
+            text-decoration: none;
+            display: block;
+            padding: 0px 6px;
+            background: #e6f2fe;
+            height: 20px;
+        }
+        
+        .current {
+            background: #a9d2ff;
+            display: block;
+            padding: 0px 6px;
+            font-weight: bold;
+        }
+        
+        #pagelist #pageinfo {
+            border: none;
+            color: antiquewhite;
+        }
+
+    </style>
+    <!--    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,700,800' rel='stylesheet' type='text/css'>-->
+    <!--    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">-->
+    <!--    <link rel="icon" href="favicon.ico" type="image/x-icon">-->
+    <!--    <link rel="stylesheet" href="http://fonts.useso.com/css?family=Open+Sans:300,400">-->
+    <!-- Google web font "Open Sans" -->
+    <!--    <link rel="stylesheet" href="font-awesome-4.6.3/css/font-awesome.min.css">-->
+    <!-- Font awesome -->
+    <!-- Bootstrap style -->
+    <!-- Hero slider style (https://codyhouse.co/gem/hero-slider/) -->
+    <!--    <link rel="stylesheet" href={% static "css2/magnific-popup.css" %}>-->
+    <!-- Magnific popup style (http://dimsemenov.com/plugins/magnific-popup/) -->
+
+</head>
+
+<body style="background-image: url({% static 'img/bg-03.jpg' %})">
+    <div class="cd-full-width">
+        <div class="container-fluid js-tm-page-content pagination" data-page-no="3">
+            
+            <!--imagin gallery-->
+            <div class="row tm-img-gallery" id="list">
+                {% if thumb %} {% for thumbnail in winloglist %}
+                <li class="col-xs-4 col-sm-4 col-md-3 col-lg-3 col-xl-3">
+                    <a href="">
+                        <img src="{% static thumbnail %}" alt="Image" class="img-fluid tm-img">
+                    </a>
+                </li>
+                {% endfor%} {% else %} No Thumbnails! {% endif %}
+            </div>
+            
+            <!--pagelist-->
+            <div style="text-align:center">
+                <div id="pagelist">
+                    <ul>
+                        {% if winloglist.has_previous %}
+                        <li><a href="?page={{ winloglist.previous_page_number }}" title="上一页">上一页</a></li> {% else %}
+                        <li>
+                            <a href="" title="上一页" disabled="disabled">上一页</a></li> {% endif %} {% for p in page_range %} {% ifequal p winloglist.number %}
+                        <li class="current"><span>{{p}}</span> </li>{% else %}
+                        <li><a href="?page={{p}}" title="第{{p}}页">{{p}}</a></li> {% endifequal %} {% endfor %} {% if winloglist.has_next %}
+                        <li><a href="?page={{ winloglist.next_page_number }}" title="下一页">下一页</a> </li>{% else %}
+                        <li><a href="" title="下一页">下一页</a> </li>{% endif %}
+                        <li id="pageinfo">共{{ total_page }}页</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+
+
+<!-- load JS files -->
+<!--    <script src={% static "js2/jquery-1.11.3.min.js" %}></script>-->
+<!-- jQuery (https://jquery.com/download/) -->
+<!--    <script src={% static "js2/tether.min.js" %}></script>-->
+<!-- Tether for Bootstrap (http://stackoverflow.com/questions/34567939/how-to-fix-the-error-error-bootstrap-tooltips-require-tether-http-github-h) -->
+<!--    <script src={% static "js2/bootstrap.min.js" %}></script>-->
+<!-- Bootstrap js (v4-alpha.getbootstrap.com/) -->
+<!--    <script src={% static "js2/hero-slider-main.js" %}></script>-->
+<!-- Hero slider (https://codyhouse.co/gem/hero-slider/) -->
+<!--    <script src={% static "js2/jquery.magnific-popup.min.js" %}></script>-->
+<!-- Magnific popup (http://dimsemenov.com/plugins/magnific-popup/) -->
+
+<!--
+    <script>
+        function adjustHeightOfPage(pageNo) {
+
+            // Get the page height
+            var totalPageHeight = 15 + $('.cd-slider-nav').height() + $(".cd-hero-slider li:nth-of-type(" + pageNo + ") .js-tm-page-content").height() + 160 + $('.tm-footer').height();
+
+            // Adjust layout based on page height and window height
+            if (totalPageHeight > $(window).height()) {
+                $('.cd-hero-slider').addClass('small-screen');
+                $('.cd-hero-slider li:nth-of-type(' + pageNo + ')').css("min-height", totalPageHeight + "px");
+            } else {
+                $('.cd-hero-slider').removeClass('small-screen');
+                $('.cd-hero-slider li:nth-of-type(' + pageNo + ')').css("min-height", "100%");
+            }
+
+        }
+
+        /*
+        	Everything is loaded including images.
+        */
+        $(window).load(function() {
+
+            adjustHeightOfPage(1); // Adjust page height
+
+            /* Gallery pop up
+            -----------------------------------------*/
+            $('.tm-img-gallery').magnificPopup({
+                delegate: 'a', // child items selector, by clicking on it popup will open
+                type: 'image',
+                gallery: {
+                    enabled: true
+                }
+            });
+
+            /* Collapse menu after click 
+            -----------------------------------------*/
+            $('#tmNavbar a').click(function() {
+                $('#tmNavbar').collapse('hide');
+
+                adjustHeightOfPage($(this).data("no")); // Adjust page height       
+            });
+
+            /* Browser resized 
+            -----------------------------------------*/
+            $(window).resize(function() {
+                var currentPageNo = $(".cd-hero-slider li.selected .js-tm-page-content").data("page-no");
+                adjustHeightOfPage(currentPageNo);
+            });
+
+            // Remove preloader
+            // https://ihatetomatoes.net/create-custom-preloading-screen/
+            $('body').addClass('loaded');
+
+        });
+
+    </script>
+-->
